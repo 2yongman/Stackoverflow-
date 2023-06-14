@@ -4,6 +4,7 @@ import BackEnd.preProject.audit.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.matcher.StringSetMatcher;
 
 import javax.persistence.*;
 
@@ -29,5 +30,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String password;
 
-
+    public Member(String username, String email, String nickname, String password){
+        this.username = username;
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+    }
 }
