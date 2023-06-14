@@ -11,4 +11,5 @@ public class AnswerPatchDto extends BaseEntity {
     private long questionId;
     private long memberId;
     private String content;
+    //Todo Valid 추가해야함
 }
