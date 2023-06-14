@@ -26,7 +26,7 @@ public class AnswerController {
     @PatchMapping("/{answer-id}")
     public ResponseEntity patchAnswer(@PathVariable("answer-id") long answerId,
                                       @RequestBody AnswerPatchDto answerPatchDto){
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED) ;
     }
 
     @DeleteMapping("/{answer-id}")
