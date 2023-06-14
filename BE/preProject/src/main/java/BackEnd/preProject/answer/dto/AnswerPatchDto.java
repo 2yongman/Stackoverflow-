@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AnswerPatchDto extends BaseEntity {
-    long answerId;
-    String content;
+    private long answerId;
+    private long questionId;
+    private long memberId;
+    private String content;
 }

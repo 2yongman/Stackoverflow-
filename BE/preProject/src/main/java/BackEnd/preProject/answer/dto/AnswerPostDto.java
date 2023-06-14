@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class AnswerPostDto {
+public class AnswerPostDto extends BaseEntity{
+    private long answerId;
     private long questionId;
     private long memberId;
     private String content;
