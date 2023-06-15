@@ -7,13 +7,14 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class MemberResponseDto {
-
-    private String username;
+public class MemberPatchResponseDto {
 
     private String email;
 
     private String nickname;
 
     private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
+
 }
