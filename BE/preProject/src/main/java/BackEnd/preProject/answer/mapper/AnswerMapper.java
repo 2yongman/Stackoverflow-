@@ -23,6 +23,8 @@ public class AnswerMapper {
         return new AnswerResponseDto(answer.getAnswerId(),
                 answer.getQuestionId(),
                 answer.getMemberId(),
-                answer.getContent());
+                answer.getContent(),
+                answer.getCreatedAt(),
+                answer.getModifiedAt());
     }
 }

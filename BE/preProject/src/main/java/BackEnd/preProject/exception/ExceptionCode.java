@@ -1,10 +1,13 @@
 package BackEnd.preProject.exception;
 
+import BackEnd.preProject.answer.entity.Answer;
 import lombok.Getter;
 
 public enum ExceptionCode {
     MEMBER_NOT_FOUND(404, "Member not found"),
-    MEMBER_EXIST(404,"Member Exist.");
+    MEMBER_EXIST(404,"Member Exist."),
+
+    ANSWER_NOT_FOUND(404,"Answer not found");
 
     @Getter
     private int status;
