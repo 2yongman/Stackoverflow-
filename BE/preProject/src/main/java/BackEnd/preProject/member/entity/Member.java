@@ -9,6 +9,8 @@ import net.bytebuddy.matcher.StringSetMatcher;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,6 +22,7 @@ public class Member extends BaseEntity {
     @Id
     private Long memberId;
 
+    @Setter
     @Column(nullable = false,unique = true, length = 20)
     private String username;
 
@@ -34,6 +37,10 @@ public class Member extends BaseEntity {
     @Setter
     @Column(nullable = false, length = 100)
     private String password;
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 
     public Member(String username, String email, String nickname, String password){
         this.username = username;
