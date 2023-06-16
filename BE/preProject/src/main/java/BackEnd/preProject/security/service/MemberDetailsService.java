@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Optional;
 
+//로그인 서비스 로직
 @Component
 public class MemberDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
@@ -26,6 +27,7 @@ public class MemberDetailsService implements UserDetailsService {
     public MemberDetailsService(MemberRepository memberRepository, CustomAuthorityUtils authorityUtils) {
         this.memberRepository = memberRepository;
         this.authorityUtils = authorityUtils;
+        System.out.println("member디테일서비스 생성자");
     }
 
 
@@ -34,6 +36,7 @@ public class MemberDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        System.out.println("유저 이름으로 멤버레포에서 찾아온 다음, 멤버디테일에 주입한 결과를 리턴");
         return new MemberDetails(findMember);
     }
 
@@ -46,10 +49,12 @@ public class MemberDetailsService implements UserDetailsService {
             setEmail(member.getEmail());
             setPassword(member.getPassword());
             setNickname(member.getNickname());
-
+            setRoles(member.getRoles());
+            System.out.println("멤버디테일. 생성자로 멤버를 받아서 멤버디테일 객체 생성");
         }
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
+            System.out.println(authorityUtils.createAuthorities(this.getRoles()));
             return authorityUtils.createAuthorities(this.getRoles());
         }
 

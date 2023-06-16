@@ -18,23 +18,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+
+//토큰 생성, 검증
 @Component
 public class JwtTokenizer {
     @Getter
     @Value("${jwt.key}")
     private String secretKey;
-
     @Getter
-    private int accessTokenExpirationMinutes = 30;
-
+    @Value("${jwt.access-token-expiration-minutes}")
+    private int accessTokenExpirationMinutes;
     @Getter
-
-    private int refreshTokenExpirationMinutes = 420;
-
+    @Value("${jwt.refresh-token-expiration-minutes}")
+    private int refreshTokenExpirationMinutes;
 
     //Todo 중요한 정보는 application.yml에 저장하고, @Value를 이용해 가져온다.
-
-
 
     // 아래 메서드는, secretKey 를 Base64로 인코딩, 암호화
     public String encodeBase64SecretKey(String secretKey) {
@@ -47,7 +45,6 @@ public class JwtTokenizer {
                                       Date expiration,
                                       String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -60,7 +57,6 @@ public class JwtTokenizer {
     //Todo 리프레쉬 토큰 생성기
     public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(Calendar.getInstance().getTime())
@@ -72,7 +68,6 @@ public class JwtTokenizer {
     //Todo 토큰을 복호화 해서 내용물을 가져오는 메서드
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-
         Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -84,7 +79,6 @@ public class JwtTokenizer {
     //Todo 토큰의 무결성을 검증하기 위한 서명을 검증하는 메서드
     public void verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-
         Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -97,20 +91,12 @@ public class JwtTokenizer {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, expirationMinutes);
         Date expiration = calendar.getTime();
-
         return expiration;
     }
     //Todo Base64로 인코딩된 비밀키를 디코딩하여 Key 객체로 변환하는 메서드
     private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
         Key key = Keys.hmacShaKeyFor(keyBytes);
-
         return key;
     }
-
-
-
-
-
-
 }

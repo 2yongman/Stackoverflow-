@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+//권한 관리
 @Component
 public class CustomAuthorityUtils {
     @Value("${mail.address.admin}")

@@ -32,6 +32,7 @@ public class AnswerController {
     //POST
     @PostMapping
     public ResponseEntity postAnswer(@Valid @RequestBody AnswerPostDto answerPostDto){
+        System.out.println("controller");
         Answer answer = mapper.answerPostDtoToAnswer(answerPostDto);
         Answer serviceResult = service.createAnswer(answer);
         AnswerResponseDto answerResponseDto = mapper.answerToAnswerResponseDto(serviceResult);

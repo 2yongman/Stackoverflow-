@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MEMBER")
 @Entity
@@ -22,21 +23,22 @@ public class Member extends BaseEntity {
     @Id
     private Long memberId;
 
-    @Setter
+
     @Column(nullable = false,unique = true, length = 20)
     private String username;
 
-    @Setter
+
     @Column(nullable = false, length = 40)
     private String email;
 
-    @Setter
+
     @Column(nullable = false, length = 40)
     private String nickname;
 
-    @Setter
+
     @Column(nullable = false, length = 100)
     private String password;
+
 
 
     @ElementCollection(fetch = FetchType.EAGER)
