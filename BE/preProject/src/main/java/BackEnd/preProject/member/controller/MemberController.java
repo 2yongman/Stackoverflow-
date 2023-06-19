@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,9 +49,13 @@ public class MemberController {
 
     @PatchMapping("/members/{member-id}")
     public ResponseEntity<MemberPatchResponseDto> update(@Positive @PathVariable("member-id") Long memberId,
-                                                         @Valid @RequestBody MemberPatchDto memberPatchDto){
+                                                         @Valid @RequestBody MemberPatchDto memberPatchDto,
+                                                         Authentication authentication){
+
+            String username = authentication.getName();
+
             Member member = memberMapper.memberPatchDtoToMember(memberPatchDto);
-            Member updateMember = memberService.update(memberId,member);
+            Member updateMember = memberService.update(memberId,member,username);
             URI location = UriCreator.createUri("/members", updateMember.getMemberId());
             HttpHeaders headers = new HttpHeaders();
             headers.set("Location", String.valueOf(location));
@@ -58,8 +63,10 @@ public class MemberController {
     }
 
     @GetMapping("/members/{member-id}")
-    public ResponseEntity<SignupResponseDto> getMember(@Positive @PathVariable("member-id") Long memberId){
-        Member findMember = memberService.getMember(memberId);
+    public ResponseEntity<SignupResponseDto> getMember(@Positive @PathVariable("member-id") Long memberId,
+                                                       Authentication authentication){
+        String username = authentication.getName();
+        Member findMember = memberService.getMember(memberId, username);
         return new ResponseEntity<SignupResponseDto>(memberMapper.memberToSignupResponseDto(findMember),HttpStatus.OK);
     }
 

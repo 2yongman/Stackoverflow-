@@ -50,20 +50,30 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Member update(Long memberId,Member member){
-        Member findMember = verifyMember(memberId);
-        Optional.ofNullable(member.getEmail())
-                .ifPresent(email -> findMember.setEmail(email));
-        Optional.ofNullable(member.getNickname())
-                .ifPresent(nickname -> findMember.setNickname(nickname));
-        Optional.ofNullable(member.getPassword())
-                .ifPresent(password -> findMember.setPassword(password));
+    public Member update(Long memberId,Member member, String username){
 
-        return memberRepository.save(findMember);
+        Member findMember = verifyMember(memberId);
+        if (String.valueOf(findMember.getUsername()).equals(username)){
+            Optional.ofNullable(member.getEmail())
+                    .ifPresent(email -> findMember.setEmail(email));
+            Optional.ofNullable(member.getNickname())
+                    .ifPresent(nickname -> findMember.setNickname(nickname));
+            Optional.ofNullable(member.getPassword())
+                    .ifPresent(password -> findMember.setPassword(password));
+
+            return memberRepository.save(findMember);
+        }
+
+        else throw new IllegalArgumentException("본인이 아닙니다.");
+
     }
 
-    public Member getMember(Long memberId){
-        return verifyMember(memberId);
+    public Member getMember(Long memberId,String username){
+        Member findMember = verifyMember(memberId);
+        if (String.valueOf(findMember.getUsername()).equals(username)){
+            return verifyMember(memberId);
+        }
+        else throw new IllegalArgumentException("본인이 아닙니다.");
     }
 
     public Page<Member> getMembers(int page, int size){

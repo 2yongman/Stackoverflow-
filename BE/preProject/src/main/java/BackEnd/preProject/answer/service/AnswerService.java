@@ -38,7 +38,7 @@ public class AnswerService {
     public Answer updateAnswer(Answer answer, String username) {
         Answer findanswer = findAnswerById(answer.getAnswerId());
 
-        Member member = memberService.getMember(findanswer.getMember().getMemberId()); // 글쓴이
+        Member member = memberService.getMember(findanswer.getMember().getMemberId(),username); // 글쓴이
         questionService.findQuestionById(findanswer.getQuestion().getQuestionId());
 
         if (String.valueOf(member.getUsername()).equals(username)){
@@ -61,7 +61,7 @@ public class AnswerService {
 
     public void deleteAnswerById(long answerId, String username) {
         Answer findAnswer = findAnswerById(answerId);
-        Member member = memberService.getMember(findAnswer.getMember().getMemberId());
+        Member member = memberService.getMember(findAnswer.getMember().getMemberId(),username);
         String requester = username;
         String creator = member.getUsername();
         if (requester == creator) {
