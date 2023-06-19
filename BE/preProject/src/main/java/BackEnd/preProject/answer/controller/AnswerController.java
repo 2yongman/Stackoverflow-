@@ -59,8 +59,10 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answer-id}")
-    public ResponseEntity deleteAnswer(@PathVariable("answer-id") @Positive long answerId){
-        service.deleteAnswerById(answerId);
+    public ResponseEntity deleteAnswer(@PathVariable("answer-id") @Positive long answerId,
+                                       Authentication authentication){
+        String username = authentication.getName();
+        service.deleteAnswerById(answerId, username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

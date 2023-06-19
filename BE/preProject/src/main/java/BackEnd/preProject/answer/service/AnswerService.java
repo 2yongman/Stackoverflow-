@@ -39,7 +39,7 @@ public class AnswerService {
         Answer findanswer = findAnswerById(answer.getAnswerId());
 
         Member member = memberService.getMember(findanswer.getMember().getMemberId()); // 글쓴이
-        Question question = questionService.findQuestionById(findanswer.getQuestion().getQuestionId());
+        questionService.findQuestionById(findanswer.getQuestion().getQuestionId());
 
         if (String.valueOf(member.getUsername()).equals(username)){
             long targetAnswerId = answer.getAnswerId();
@@ -59,10 +59,13 @@ public class AnswerService {
         return findAnswer;
     }
 
-    public void deleteAnswerById(long answerId) {
-        Optional<Answer> optionalAnswer = answerRepository.findById(answerId);
-        Answer findAnswer = optionalAnswer.orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.ANSWER_NOT_FOUND));
-        answerRepository.delete(findAnswer);
+    public void deleteAnswerById(long answerId, String username) {
+        Answer findAnswer = findAnswerById(answerId);
+        Member member = memberService.getMember(findAnswer.getMember().getMemberId());
+        String requester = username;
+        String creator = member.getUsername();
+        if (requester == creator) {
+            answerRepository.delete(findAnswer);
+        }
     }
 }
