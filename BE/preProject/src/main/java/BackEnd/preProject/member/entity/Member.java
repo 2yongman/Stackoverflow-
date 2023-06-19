@@ -7,13 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.bytebuddy.matcher.StringSetMatcher;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
+@Where(clause = "deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE MEMBER SET deleted_at = CURRENT_TIMESTAMP where member_id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MEMBER")
 @Entity
@@ -39,7 +43,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String password;
 
-
+    private LocalDateTime deletedAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
