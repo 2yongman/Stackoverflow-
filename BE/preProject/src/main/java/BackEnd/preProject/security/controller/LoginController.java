@@ -21,7 +21,7 @@ import java.util.Objects;
 public class LoginController {
 
     @PostMapping
-    public ResponseEntity getLogin(@Valid @RequestBody LoginDto loginDto){
+    public ResponseEntity getLogin(@Valid @RequestBody LoginDto loginDto) throws Exception{
         //Todo Service 로직
         return new ResponseEntity<>(HttpStatus.OK);
     }

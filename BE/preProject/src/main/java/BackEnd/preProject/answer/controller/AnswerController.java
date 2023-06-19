@@ -47,7 +47,7 @@ public class AnswerController {
         answer.setAnswerId(answerId);
         Answer serviceResult = service.updateAnswer(answer);
         AnswerResponseDto answerResponseDto = mapper.answerToAnswerResponseDto(serviceResult);
-        return new ResponseEntity<>(answerResponseDto, HttpStatus.ACCEPTED) ;
+        return new ResponseEntity<>(answerResponseDto, HttpStatus.OK) ;
     }
 
     @DeleteMapping("/{answer-id}")

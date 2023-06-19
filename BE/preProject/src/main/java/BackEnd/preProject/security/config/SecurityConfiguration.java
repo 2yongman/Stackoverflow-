@@ -51,13 +51,13 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.POST, "/answers/**").hasRole("USER")
-                        .antMatchers(HttpMethod.PATCH, "/answers/**").hasRole("USER")
-                        .antMatchers(HttpMethod.DELETE, "/answers/**").hasRole("USER")
-                        .antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
-                        .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
-                        .antMatchers(HttpMethod.POST, "/questions/**").hasRole("USER")
-                        .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.POST, "/answers/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.PATCH, "/answers/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.DELETE, "/answers/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.POST, "/questions/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER")
                         .anyRequest().permitAll() /// Todo URI 권한 레벨 설정
                 );
         return http.build();
