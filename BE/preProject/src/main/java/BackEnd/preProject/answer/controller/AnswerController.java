@@ -6,8 +6,10 @@ import BackEnd.preProject.answer.dto.AnswerResponseDto;
 import BackEnd.preProject.answer.entity.Answer;
 import BackEnd.preProject.answer.mapper.AnswerMapper;
 import BackEnd.preProject.answer.service.AnswerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,11 +32,14 @@ public class AnswerController {
 
 
     //POST
-    @PostMapping
-    public ResponseEntity postAnswer(@Valid @RequestBody AnswerPostDto answerPostDto){
-        System.out.println("controller");
+    @PostMapping("/{question-id}")
+    public ResponseEntity postAnswer(@Valid @RequestBody AnswerPostDto answerPostDto,
+                                     @PathVariable("question-id") @Positive long questionId,
+                                     Authentication authentication){
+        String username = authentication.getName();
+
         Answer answer = mapper.answerPostDtoToAnswer(answerPostDto);
-        Answer serviceResult = service.createAnswer(answer);
+        Answer serviceResult = service.createAnswer(answer, username, questionId);
         AnswerResponseDto answerResponseDto = mapper.answerToAnswerResponseDto(serviceResult);
         return new ResponseEntity<>(answerResponseDto, HttpStatus.CREATED);
     }
@@ -42,10 +47,13 @@ public class AnswerController {
     // PATCH
     @PatchMapping("/{answer-id}")
     public ResponseEntity patchAnswer(@PathVariable("answer-id") @Positive long answerId,
-                                      @Valid @RequestBody AnswerPatchDto answerPatchDto){
+                                      @Valid @RequestBody AnswerPatchDto answerPatchDto,
+                                      Authentication authentication){
+        String username = authentication.getName();
+
         Answer answer = mapper.answerPatchDtoToAnswer(answerPatchDto);
         answer.setAnswerId(answerId);
-        Answer serviceResult = service.updateAnswer(answer);
+        Answer serviceResult = service.updateAnswer(answer,username);
         AnswerResponseDto answerResponseDto = mapper.answerToAnswerResponseDto(serviceResult);
         return new ResponseEntity<>(answerResponseDto, HttpStatus.OK) ;
     }

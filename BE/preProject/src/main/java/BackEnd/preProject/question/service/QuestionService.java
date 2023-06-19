@@ -32,11 +32,18 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
-    public Question updateQuestion(Question question){
+    public Question updateQuestion(Question question, String username){
         Question findQuestion = findQuestionById(question.getQuestionId());
-        findQuestion.setTitle(question.getTitle());
-        findQuestion.setContent(question.getContent());
-        return questionRepository.save(findQuestion);
+        Member member = memberService.findMemberByUsername(username); // 검증목적
+
+        if (findQuestion.getMember().getUsername() == member.getUsername()){
+            findQuestion.setTitle(question.getTitle());
+            findQuestion.setContent(question.getContent());
+            return questionRepository.save(findQuestion);
+        }
+        else {
+            throw new IllegalArgumentException("작성자 본인이 아닙니다.");
+        }
     }
 
 
@@ -47,8 +54,16 @@ public class QuestionService {
         return findQuestion;
     }
 
-    public void deleteQuestionById(long questionId){
-        questionRepository.delete(findQuestionById(questionId));
+    public void deleteQuestionById(long questionId, String username){
+        Question findQuestion = findQuestionById(questionId);
+        Member member = memberService.findMemberByUsername(username); // 검증목적
+
+        if (findQuestion.getMember().getUsername() == member.getUsername()){
+            questionRepository.delete(findQuestionById(questionId));
+        }
+        else {
+            throw new IllegalArgumentException("작성자 본인이 아닙니다.");
+        }
     }
 
 

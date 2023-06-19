@@ -52,10 +52,14 @@ public class QuestionController {
 
     @PatchMapping("/{question-id}")
     public ResponseEntity patchQuestion(@Valid @RequestBody QuestionPatchDto questionPatchDto,
-                                        @PathVariable("question-id") @Positive long questionId) {
+                                        @PathVariable("question-id") @Positive long questionId,
+                                        Authentication authentication) {
+        String username = authentication.getName();
+
+
         Question question = mapper.questionPatchDtoToQuestion(questionPatchDto);
         question.setQuestionId(questionId);
-        Question serviceResult = service.updateQuestion(question);
+        Question serviceResult = service.updateQuestion(question, username);
         QuestionResponseDto questionResponseDto = mapper.questionToQuestionResponseDto(serviceResult);
 
         return new ResponseEntity<>(questionResponseDto, HttpStatus.OK);
@@ -80,8 +84,10 @@ public class QuestionController {
     }
 
     @DeleteMapping("{question-id}")
-    public ResponseEntity deleteQuestion(@PathVariable("question-id") long questionId) {
-        service.deleteQuestionById(questionId);
+    public ResponseEntity deleteQuestion(@PathVariable("question-id") long questionId,
+                                         Authentication authentication) {
+        String username = authentication.getName();
+        service.deleteQuestionById(questionId, username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

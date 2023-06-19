@@ -9,22 +9,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class AnswerMapper {
     public Answer answerPostDtoToAnswer(AnswerPostDto answerPostDto) {
-        return new Answer(answerPostDto.getQuestionId(),
-                answerPostDto.getMemberId(),
-                answerPostDto.getContent());
+        return new Answer(answerPostDto.getContent());
     }
     public Answer answerPatchDtoToAnswer(AnswerPatchDto answerPatchDto) {
-        return new Answer(answerPatchDto.getQuestionId(),
-                answerPatchDto.getMemberId(),
-                answerPatchDto.getContent());
+        return new Answer(answerPatchDto.getContent());
     }
 
     public AnswerResponseDto answerToAnswerResponseDto(Answer answer) {
-        return new AnswerResponseDto(answer.getAnswerId(),
-                answer.getQuestionId(),
-                answer.getMemberId(),
+        return new AnswerResponseDto(
+                answer.getMember().getNickname(),
                 answer.getContent(),
                 answer.getCreatedAt(),
-                answer.getModifiedAt());
+                answer.getModifiedAt()
+                );
     }
 }

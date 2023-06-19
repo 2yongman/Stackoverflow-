@@ -1,6 +1,8 @@
 package BackEnd.preProject.answer.entity;
 
 import BackEnd.preProject.audit.BaseEntity;
+import BackEnd.preProject.member.entity.Member;
+import BackEnd.preProject.question.entity.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,17 +19,18 @@ public class Answer extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long answerId;
 
-    @Column(nullable = false, updatable = false) // FK 로 변경해야
-    private long questionId;
-    @Column(nullable = false, updatable = false)
-    private long memberId;
+    @ManyToOne
+    @JoinColumn(name = "QUESTION_ID")
+    private Question question;
+
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @Column(nullable = false)
     private String content;
 
-    public Answer(long questionId, long memberId, String content){
-        this.questionId=questionId;
-        this.memberId=memberId;
+    public Answer(String content){
         this.content=content;
     }
 
