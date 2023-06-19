@@ -6,6 +6,9 @@ import BackEnd.preProject.answer.dto.AnswerResponseDto;
 import BackEnd.preProject.answer.entity.Answer;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class AnswerMapper {
     public Answer answerPostDtoToAnswer(AnswerPostDto answerPostDto) {
@@ -22,5 +25,13 @@ public class AnswerMapper {
                 answer.getCreatedAt(),
                 answer.getModifiedAt()
                 );
+    }
+
+    public List<AnswerResponseDto> answersToAnswerResponseDtos(List<Answer> answers){
+        List<AnswerResponseDto> list = new ArrayList<>(answers.size());
+        for (Answer answer : answers){
+            list.add(this.answerToAnswerResponseDto(answer));
+        }
+        return list;
     }
 }

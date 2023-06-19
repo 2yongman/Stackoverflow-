@@ -7,7 +7,10 @@ import BackEnd.preProject.exception.ExceptionCode;
 import BackEnd.preProject.member.entity.Member;
 import BackEnd.preProject.member.service.MemberService;
 import BackEnd.preProject.question.entity.Question;
+import BackEnd.preProject.question.repository.QuestionRepository;
 import BackEnd.preProject.question.service.QuestionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,13 +19,14 @@ import java.util.Optional;
 public class AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionService questionService;
-
     private final MemberService memberService;
+    private final QuestionRepository questionRepository;
 
-    public AnswerService(AnswerRepository answerRepository, QuestionService questionService, MemberService memberService){
+    public AnswerService(AnswerRepository answerRepository, QuestionService questionService, MemberService memberService,QuestionRepository questionRepository){
         this.answerRepository = answerRepository;
         this.questionService = questionService;
         this.memberService = memberService;
+        this.questionRepository = questionRepository;
     }
 
     public Answer createAnswer(Answer answer, String username, long questionId) {
@@ -67,5 +71,11 @@ public class AnswerService {
         if (requester == creator) {
             answerRepository.delete(findAnswer);
         }
+    }
+
+    public Page<Answer> answerInfinityScroll(Long questionId, Long lastAnswerId,int size){
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
+        PageRequest pageRequest = PageRequest.of(0,size);
+        return answerRepository.findByQuestionAndAnswerIdLessThanOrderByAnswerIdDesc(question, lastAnswerId, pageRequest);
     }
 }
