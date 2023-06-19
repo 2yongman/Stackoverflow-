@@ -60,7 +60,7 @@ public class SecurityConfiguration {
 //                        .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER")
                         .anyRequest().permitAll() /// Todo URI 권한 레벨 설정
                 );
-        return http.build();
+        return http.build() ;
     }
 
     @Bean
