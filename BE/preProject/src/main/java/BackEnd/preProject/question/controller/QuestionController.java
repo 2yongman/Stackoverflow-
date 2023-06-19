@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,27 +36,15 @@ public class QuestionController {
         this.mapper = mapper;
         this.service = service;
     }
+
     @PostMapping
-    public ResponseEntity postQuestion(@RequestHeader HttpHeaders headers,
-            @Valid @RequestBody QuestionPostDto questionPostDto){
+    public ResponseEntity postQuestion(Authentication authentication,
+                                       @Valid @RequestBody QuestionPostDto questionPostDto) {
 
-
-
-        String accessToken = headers.getFirst("Authorization");
-        //Todo accessToken의 내부정보를 print
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(accessToken.split("\\.")[1]));
-        Map<String, Object> tokenPayload = new JwtDecoder().jwtPayloadToMap(payload);
-        System.out.println(tokenPayload);
-
-        System.out.println("username : "+ tokenPayload.get("username"));
-        System.out.println("roles : "+ tokenPayload.get("roles"));
-
-
-
+        String username = authentication.getName();
 
         Question question = mapper.questionPostDtoToQuestion(questionPostDto);
-        Question serviceResult = service.createQuestion(question);
+        Question serviceResult = service.createQuestion(question, username);
         QuestionResponseDto questionResponseDto = mapper.questionToQuestionResponseDto(serviceResult);
 
         return new ResponseEntity<>(questionResponseDto, HttpStatus.CREATED);
@@ -62,7 +52,7 @@ public class QuestionController {
 
     @PatchMapping("/{question-id}")
     public ResponseEntity patchQuestion(@Valid @RequestBody QuestionPatchDto questionPatchDto,
-                                        @PathVariable("question-id") @Positive long questionId){
+                                        @PathVariable("question-id") @Positive long questionId) {
         Question question = mapper.questionPatchDtoToQuestion(questionPatchDto);
         question.setQuestionId(questionId);
         Question serviceResult = service.updateQuestion(question);
@@ -73,7 +63,7 @@ public class QuestionController {
 
     @GetMapping
     public ResponseEntity getQuestions(@RequestParam(defaultValue = "0") String page,
-                                       @RequestParam(defaultValue = "0") String size){
+                                       @RequestParam(defaultValue = "0") String size) {
 
         //Todo page 구현
         Page<Question> serviceResult = service.findQuestions(Integer.parseInt(page),
@@ -83,14 +73,14 @@ public class QuestionController {
     }
 
     @GetMapping("/{question-id}")
-    public ResponseEntity getQuestion(@PathVariable("question-id") long questionId){
+    public ResponseEntity getQuestion(@PathVariable("question-id") long questionId) {
         Question serviceResult = service.findQuestionById(questionId);
         QuestionResponseDto questionResponseDto = mapper.questionToQuestionResponseDto(serviceResult);
         return new ResponseEntity<>(questionResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("{question-id}")
-    public ResponseEntity deleteQuestion(@PathVariable("question-id") long questionId){
+    public ResponseEntity deleteQuestion(@PathVariable("question-id") long questionId) {
         service.deleteQuestionById(questionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

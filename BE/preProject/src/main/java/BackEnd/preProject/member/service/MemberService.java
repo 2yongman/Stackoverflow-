@@ -80,7 +80,7 @@ public class MemberService {
         memberExistCheck(username);
     }
 
-    private void memberExistCheck(String username){
+    public void memberExistCheck(String username){
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
         if (optionalMember.isPresent()){
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXIST);
@@ -90,6 +90,13 @@ public class MemberService {
     private Member verifyMember(Long memberId){
         Member findMember = memberRepository.findById(memberId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        return findMember;
+    }
+
+    public Member findMemberByUsername(String username){
+        Member findMember = memberRepository.findByUsername(username).orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND)
+        );
         return findMember;
     }
 }

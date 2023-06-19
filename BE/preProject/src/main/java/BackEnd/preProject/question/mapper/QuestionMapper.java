@@ -11,21 +11,22 @@ import org.springframework.stereotype.Component;
 public class QuestionMapper {
 
     public Question questionPostDtoToQuestion(QuestionPostDto questionPostDto){
-        return new Question(questionPostDto.getMemberId(),
+        return new Question(
                 questionPostDto.getTitle(),
                 questionPostDto.getContent());
 
     }
 
     public Question questionPatchDtoToQuestion(QuestionPatchDto questionPatchDto){
-        return new Question(questionPatchDto.getMemberId(),
+        return new Question(
                 questionPatchDto.getTitle(),
                 questionPatchDto.getContent());
     }
 
     public QuestionResponseDto questionToQuestionResponseDto(Question question){
-        return new QuestionResponseDto(question.getQuestionId(),
-                question.getMemberId(),
+        return new QuestionResponseDto(
+                question.getQuestionId(),
+                question.getMember().getUsername(),
                 question.getTitle(),
                 question.getContent(),
                 question.getCreatedAt(),

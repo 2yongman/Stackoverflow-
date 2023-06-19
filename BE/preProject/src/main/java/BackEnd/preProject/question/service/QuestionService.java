@@ -4,6 +4,8 @@ package BackEnd.preProject.question.service;
 import BackEnd.preProject.answer.entity.Answer;
 import BackEnd.preProject.exception.BusinessLogicException;
 import BackEnd.preProject.exception.ExceptionCode;
+import BackEnd.preProject.member.entity.Member;
+import BackEnd.preProject.member.service.MemberService;
 import BackEnd.preProject.question.entity.Question;
 import BackEnd.preProject.question.repository.QuestionRepository;
 import org.springframework.data.domain.Page;
@@ -15,12 +17,18 @@ import java.util.Optional;
 
 @Service
 public class QuestionService {
-    private final QuestionRepository questionRepository;
 
-    public QuestionService(QuestionRepository questionRepository){
+    private final QuestionRepository questionRepository;
+    private final MemberService memberService;
+
+    public QuestionService(QuestionRepository questionRepository, MemberService memberService) {
         this.questionRepository = questionRepository;
+        this.memberService = memberService;
     }
-    public Question createQuestion(Question question){
+
+    public Question createQuestion(Question question, String username){
+        Member findMember = memberService.findMemberByUsername(username);
+        question.setMember(findMember);
         return questionRepository.save(question);
     }
 

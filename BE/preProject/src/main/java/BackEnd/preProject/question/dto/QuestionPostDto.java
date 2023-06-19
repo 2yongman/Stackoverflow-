@@ -14,12 +14,9 @@ import javax.validation.constraints.Size;
 @Setter
 public class QuestionPostDto extends BaseEntity {
 
-    @NotNull
-    @PositiveOrZero
-    private long memberId;
-
     @NotBlank
     private String title;
+
     @NotBlank
     @Size(min = 10)
     private String content;
