@@ -7,6 +7,9 @@ import BackEnd.preProject.question.dto.QuestionResponseDto;
 import BackEnd.preProject.question.entity.Question;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class QuestionMapper {
 
@@ -31,6 +34,14 @@ public class QuestionMapper {
                 question.getContent(),
                 question.getCreatedAt(),
                 question.getModifiedAt());
+    }
+
+    public List<QuestionResponseDto> questionsToQuestionResponseDtos(List<Question> questions){
+        List<QuestionResponseDto> list = new ArrayList<>(questions.size());
+        for (Question question : questions){
+            list.add(this.questionToQuestionResponseDto(question));
+        }
+        return list;
     }
 
 }
