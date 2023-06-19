@@ -7,6 +7,8 @@ import BackEnd.preProject.question.dto.QuestionResponseDto;
 import BackEnd.preProject.question.entity.Question;
 import BackEnd.preProject.question.mapper.QuestionMapper;
 import BackEnd.preProject.question.service.QuestionService;
+import BackEnd.preProject.response.InfinityResponseDto;
+import BackEnd.preProject.response.MultiResponseDto;
 import BackEnd.preProject.security.jwt.JwtTokenizer;
 import BackEnd.preProject.utils.JwtDecoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -91,4 +93,15 @@ public class QuestionController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    //Infinity Scroll
+    @GetMapping("/infinity")
+    public ResponseEntity questionInfinityScroll(@RequestParam("last_Question_Id") Long lastQuestionId,
+                                                 @RequestParam("size") int size){
+        Page<Question> questionPage = service.questionInfinityScroll(lastQuestionId, size);
+        List<Question> list = questionPage.getContent();
+
+        return new ResponseEntity(new InfinityResponseDto<>(mapper.questionsToQuestionResponseDtos(list),questionPage),HttpStatus.OK);
+
+
+    }
 }
