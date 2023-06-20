@@ -6,8 +6,10 @@ import BackEnd.preProject.answer.dto.AnswerResponseDto;
 import BackEnd.preProject.answer.entity.Answer;
 import BackEnd.preProject.answer.mapper.AnswerMapper;
 import BackEnd.preProject.answer.service.AnswerService;
+import BackEnd.preProject.question.dto.QuestionResponseDto;
 import BackEnd.preProject.response.CursorResult;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,9 @@ import java.util.List;
 @RequestMapping("/answers")
 @Validated
 public class AnswerController {
+
+    private static final int DEFAULT_SIZE = 10;
+
     private final AnswerMapper mapper;
     private final AnswerService service;
 
@@ -69,14 +74,10 @@ public class AnswerController {
 
     @GetMapping("/infinity/{question-id}")
     public ResponseEntity answerInfinityScroll(@Positive @PathVariable("question-id") Long questionId,
-                                               @RequestParam("answerId") Long answerId,
-                                               @RequestParam("size") int size){
-        Page<Answer> answerPage = service.answerInfinityScroll(questionId,answerId,size);
-        List<Answer> answers = answerPage.getContent();
-
-        return new ResponseEntity(HttpStatus.OK);
-
+                                               @RequestParam(required = false) Long cursorId,
+                                               @RequestParam(required = false) Integer size){
+        if (size == null) size = DEFAULT_SIZE;
+        CursorResult<AnswerResponseDto> cursorResult = service.infinityScroll(questionId,cursorId, PageRequest.of(0,size));
+        return new ResponseEntity(cursorResult,HttpStatus.OK);
     }
-
-
 }

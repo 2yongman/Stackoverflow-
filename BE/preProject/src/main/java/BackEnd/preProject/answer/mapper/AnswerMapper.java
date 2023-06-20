@@ -20,6 +20,7 @@ public class AnswerMapper {
 
     public AnswerResponseDto answerToAnswerResponseDto(Answer answer) {
         return new AnswerResponseDto(
+                answer.getAnswerId(),
                 answer.getMember().getNickname(),
                 answer.getContent(),
                 answer.getCreatedAt(),

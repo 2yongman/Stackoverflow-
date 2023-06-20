@@ -92,7 +92,8 @@ public class QuestionController {
 
     //Infinity Scroll
     @GetMapping("/infinity")
-    public ResponseEntity questionInfinityScroll(@RequestParam(required = false) Long cursorId, @RequestParam(required = false) Integer size){
+    public ResponseEntity questionInfinityScroll(@RequestParam(required = false) Long cursorId,
+                                                 @RequestParam(required = false) Integer size){
         if (size == null) size = DEFAULT_SIZE;
         CursorResult<QuestionResponseDto> cursorResult = this.service.getInfinityQuestion(cursorId, PageRequest.of(0,size));
         return new ResponseEntity(cursorResult,HttpStatus.OK);
