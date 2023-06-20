@@ -6,10 +6,14 @@ import BackEnd.preProject.exception.BusinessLogicException;
 import BackEnd.preProject.exception.ExceptionCode;
 import BackEnd.preProject.member.entity.Member;
 import BackEnd.preProject.member.service.MemberService;
+import BackEnd.preProject.question.dto.QuestionResponseDto;
 import BackEnd.preProject.question.entity.Question;
+import BackEnd.preProject.question.mapper.QuestionMapper;
 import BackEnd.preProject.question.repository.QuestionRepository;
+import BackEnd.preProject.response.CursorResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +27,12 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final MemberService memberService;
+    private final QuestionMapper questionMapper;
 
-    public QuestionService(QuestionRepository questionRepository, MemberService memberService) {
+    public QuestionService(QuestionRepository questionRepository, MemberService memberService, QuestionMapper questionMapper) {
         this.questionRepository = questionRepository;
         this.memberService = memberService;
+        this.questionMapper = questionMapper;
     }
 
     public Question createQuestion(Question question, String username){
@@ -85,14 +91,31 @@ public class QuestionService {
     }
 
     //infinitiy scroll
-    public Page<Question> questionInfinityScroll(Long questionId, int size){
-        PageRequest pageRequest = PageRequest.of(0,size);
-        return questionRepository.findByQuestionIdLessThanOrderByQuestionIdDesc(questionId,pageRequest);
+    public CursorResult<QuestionResponseDto> getInfinityQuestion(Long cursorId, Pageable pageable){
+        final List<Question> questions = getQuestions(cursorId,pageable);
+        final List<QuestionResponseDto> questionResponseDtos = questionMapper.questionsToQuestionResponseDtos(questions);
+
+        final Long lastIdOfList = questions.isEmpty() ?
+                null : questions.get(questions.size() - 1).getQuestionId();
+
+        return new CursorResult<>(questionResponseDtos, hasNext(lastIdOfList));
     }
 
     //search
     @Transactional
     public List<Question> search(String keyward){
         return questionRepository.findByTitleContainingOrderByCreatedAtDesc(keyward);
+    }
+
+    private List<Question> getQuestions(Long questionId, Pageable pageable){
+        return questionId == null ?
+                this.questionRepository.findAllByOrderByQuestionIdDesc(pageable) :
+                this.questionRepository.findByQuestionIdLessThanOrderByQuestionIdDesc(questionId,pageable);
+    }
+
+    private Boolean hasNext(Long questionId){
+        if (questionId == null) return false;
+        return this.questionRepository.existsByQuestionIdLessThan(questionId);
+
     }
 }
