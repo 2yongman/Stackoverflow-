@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,6 @@ public class QuestionService {
         }
     }
 
-
     public Page<Question> findQuestions(int page, int size) {
         return questionRepository.findAll(PageRequest.of(page, size,
                 Sort.by("questionId").descending()));
@@ -77,5 +77,11 @@ public class QuestionService {
     public Page<Question> questionInfinityScroll(Long questionId, int size){
         PageRequest pageRequest = PageRequest.of(0,size);
         return questionRepository.findByQuestionIdLessThanOrderByQuestionIdDesc(questionId,pageRequest);
+    }
+
+    //search
+    @Transactional
+    public List<Question> search(String keyward){
+        return questionRepository.findByTitleContainingOrderByCreatedAtDesc(keyward);
     }
 }
