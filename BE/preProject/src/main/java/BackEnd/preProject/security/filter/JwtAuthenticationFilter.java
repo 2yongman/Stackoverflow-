@@ -13,9 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 //컨트롤러로 가기 전 필터
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -42,13 +41,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) {
+                                            Authentication authResult) throws IOException {
         Member member = (Member) authResult.getPrincipal();
         String accessToken = delegateAccessToken(member);
         String refreshToken = delegateRefreshToken(member);
 
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
+
+        //로그인한 유저의 아이디를 JSON 형식으로 응답
+        String username = member.getUsername();
+        String email = member.getEmail();
+        String nickname = member.getNickname();
+        Map<String,String> result = new HashMap<>();
+        result.put("\"username\"",'"'+username+'"');
+        result.put("\"email\"",'"'+email+'"');
+        result.put("\"nickname\"",'"'+nickname+'"');
+
+
+        response.setContentType("application/json");
+        response.getWriter().write(String.valueOf(result).replace("{","{\n").replace(",",",\n")
+                .replace("=",":").replace(":"," :"));
     }
 
 
