@@ -73,9 +73,11 @@ public class QuestionController {
                                        @RequestParam(defaultValue = "0") String size) {
 
         //Todo page 구현
-        Page<Question> serviceResult = service.findQuestions(Integer.parseInt(page),
+        List<Question> serviceResult = service.findQuestions(Integer.parseInt(page),
                 Integer.parseInt(size));
-        List<Question> questions = serviceResult.getContent();
+
+        List<QuestionResponseDto> questions = mapper.questionsToQuestionResponseDtos(serviceResult);
+
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 
