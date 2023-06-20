@@ -7,30 +7,24 @@ import BackEnd.preProject.question.dto.QuestionResponseDto;
 import BackEnd.preProject.question.entity.Question;
 import BackEnd.preProject.question.mapper.QuestionMapper;
 import BackEnd.preProject.question.service.QuestionService;
-import BackEnd.preProject.response.InfinityResponseDto;
-import BackEnd.preProject.response.MultiResponseDto;
-import BackEnd.preProject.security.jwt.JwtTokenizer;
-import BackEnd.preProject.utils.JwtDecoder;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
+import BackEnd.preProject.response.CursorResult;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.util.Base64;
-import java.util.HashMap;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/questions")
 @RestController
 public class QuestionController {
+
+    private static final int DEFAULT_SIZE = 10;
+
     private final QuestionMapper mapper;
     private final QuestionService service;
 
@@ -98,12 +92,10 @@ public class QuestionController {
 
     //Infinity Scroll
     @GetMapping("/infinity")
-    public ResponseEntity questionInfinityScroll(@RequestParam("last_Question_Id") Long lastQuestionId,
-                                                 @RequestParam("size") int size){
-        Page<Question> questionPage = service.questionInfinityScroll(lastQuestionId, size);
-        List<Question> list = questionPage.getContent();
-
-        return new ResponseEntity(new InfinityResponseDto<>(mapper.questionsToQuestionResponseDtos(list),questionPage),HttpStatus.OK);
+    public ResponseEntity questionInfinityScroll(@RequestParam(required = false) Long cursorId, @RequestParam(required = false) Integer size){
+        if (size == null) size = DEFAULT_SIZE;
+        CursorResult<QuestionResponseDto> cursorResult = this.service.getInfinityQuestion(cursorId, PageRequest.of(0,size));
+        return new ResponseEntity(cursorResult,HttpStatus.OK);
     }
 
     //search

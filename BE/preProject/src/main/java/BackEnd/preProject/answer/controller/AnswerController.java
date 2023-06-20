@@ -6,8 +6,7 @@ import BackEnd.preProject.answer.dto.AnswerResponseDto;
 import BackEnd.preProject.answer.entity.Answer;
 import BackEnd.preProject.answer.mapper.AnswerMapper;
 import BackEnd.preProject.answer.service.AnswerService;
-import BackEnd.preProject.response.InfinityResponseDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import BackEnd.preProject.response.CursorResult;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -76,7 +74,7 @@ public class AnswerController {
         Page<Answer> answerPage = service.answerInfinityScroll(questionId,answerId,size);
         List<Answer> answers = answerPage.getContent();
 
-        return new ResponseEntity(new InfinityResponseDto<>(mapper.answersToAnswerResponseDtos(answers),answerPage),HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
 
     }
 
