@@ -102,7 +102,12 @@ public class QuestionController {
         List<Question> list = questionPage.getContent();
 
         return new ResponseEntity(new InfinityResponseDto<>(mapper.questionsToQuestionResponseDtos(list),questionPage),HttpStatus.OK);
+    }
 
-
+    //search
+    @GetMapping("/search")
+    public ResponseEntity search(@RequestParam("keyward") String keyward){
+        List<Question> questions = service.search(keyward);
+        return new ResponseEntity(mapper.questionsToQuestionResponseDtos(questions),HttpStatus.OK);
     }
 }
