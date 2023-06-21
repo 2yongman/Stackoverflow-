@@ -50,8 +50,6 @@ dependencies {
 	//Spring Batch
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 
-	//jdbc
-	runtimeOnly 'your-jdbc-driver-group:your-jdbc-driver-artifact:version'
 
 }
 
