@@ -9,6 +9,9 @@ spring:
     hibernate:
       ddl-auto: create  # (1) 스키마 자동 생성
     show-sql: true      # (2) SQL 쿼리 출력
+  batch:
+    job:
+      names: ${job.name:NONE}
 
 mail:
   address:
@@ -18,3 +21,4 @@ jwt:
   key: 121312313212313212312312312341534564564154153131321321351534654646463135131534354435131023135463      # 민감한 정보는 시스템 환경 변수에서 로드한다.
   access-token-expiration-minutes: 30
   refresh-token-expiration-minutes: 420
+
