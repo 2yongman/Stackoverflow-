@@ -81,8 +81,15 @@ public class MemberService {
                 Sort.by("memberId").descending()));
     }
 
-    public void deleteMember(Long memberId){
+    public void deleteMember(Long memberId, String username){
+        Member usernameFromDb = findMemberByUsername(username);
         Member deleteMember = verifyMember(memberId);
+
+        long memberIdFromDb = usernameFromDb.getMemberId();
+        long memberIdFromVerify = deleteMember.getMemberId();
+
+        if (memberIdFromDb != memberIdFromVerify) throw new IllegalArgumentException("본인이 아닙니다.");
+
         memberRepository.delete(deleteMember);
     }
 
