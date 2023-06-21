@@ -1,7 +1,8 @@
 package BackEnd.preProject.security.filter;
 
+import BackEnd.preProject.accessHistory.LoginHistory;
+import BackEnd.preProject.accessHistory.LoginHistoryRepository;
 import BackEnd.preProject.member.entity.Member;
-import BackEnd.preProject.member.service.MemberService;
 import BackEnd.preProject.security.dto.LoginDto;
 import BackEnd.preProject.security.jwt.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,16 +16,20 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 //컨트롤러로 가기 전 필터
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
+    private final LoginHistoryRepository loginHistoryRepository;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer,
+                                   LoginHistoryRepository loginHistoryRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
+        this.loginHistoryRepository = loginHistoryRepository;
     }
 
     @SneakyThrows
@@ -58,7 +63,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String nickname = member.getNickname();
         long memberId = member.getMemberId();
 
-
+        LoginHistory loginHistory = new LoginHistory(username, LocalDateTime.now());
+        loginHistoryRepository.save(loginHistory);
 
         Map<String,String> result = new HashMap<>();
 

@@ -101,8 +101,8 @@ public class QuestionController {
 
     //search
     @GetMapping("/search")
-    public ResponseEntity search(@RequestParam("keyward") String keyward){
-        List<Question> questions = service.search(keyward);
+    public ResponseEntity search(@RequestParam("keyword") String keyword){
+        List<Question> questions = service.search(keyword);
         return new ResponseEntity(mapper.questionsToQuestionResponseDtos(questions),HttpStatus.OK);
     }
 }

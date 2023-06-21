@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.*;
 
 @Getter
+@Setter
 public class SignupDto {
 
     @NotBlank(message = "ID를 입력해주세요.")
