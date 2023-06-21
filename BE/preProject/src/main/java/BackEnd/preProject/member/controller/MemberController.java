@@ -80,8 +80,10 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{member-id}")
-    public ResponseEntity deleteMember(@Positive @PathVariable("member-id") Long memberId){
-        memberService.deleteMember(memberId);
+    public ResponseEntity deleteMember(@Positive @PathVariable("member-id") Long memberId,
+                                       Authentication authentication){
+        String username = authentication.getName();
+        memberService.deleteMember(memberId,username);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

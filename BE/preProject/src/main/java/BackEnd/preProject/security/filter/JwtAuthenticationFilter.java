@@ -1,6 +1,7 @@
 package BackEnd.preProject.security.filter;
 
 import BackEnd.preProject.member.entity.Member;
+import BackEnd.preProject.member.service.MemberService;
 import BackEnd.preProject.security.dto.LoginDto;
 import BackEnd.preProject.security.jwt.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,11 +50,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
 
+
+
         //로그인한 유저의 아이디를 JSON 형식으로 응답
         String username = member.getUsername();
         String email = member.getEmail();
         String nickname = member.getNickname();
+        long memberId = member.getMemberId();
+
+
+
         Map<String,String> result = new HashMap<>();
+
+        result.put("\"memberId\"",'"'+String.valueOf(memberId)+'"');
         result.put("\"username\"",'"'+username+'"');
         result.put("\"email\"",'"'+email+'"');
         result.put("\"nickname\"",'"'+nickname+'"');
@@ -69,8 +78,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private String delegateAccessToken(Member member) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", member.getUsername());
-        claims.put("memberId", member.getMemberId());
+//        claims.put("memberId", member.getMemberId());
         claims.put("roles", member.getRoles());
+
 
         String subject = member.getEmail(); /// Todo 토큰에 email 정보를 넣을까 말까? 다른걸 넣을까 고민중
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
