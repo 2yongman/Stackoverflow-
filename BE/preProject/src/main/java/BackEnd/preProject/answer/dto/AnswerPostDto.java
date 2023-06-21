@@ -9,11 +9,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class AnswerPostDto extends BaseEntity{
+public class AnswerPostDto extends BaseEntity {
 
     @NotBlank
     @Size(min = 5)
     private String content;
-
 
 }

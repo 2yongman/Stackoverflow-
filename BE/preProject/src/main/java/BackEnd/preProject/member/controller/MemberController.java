@@ -1,5 +1,7 @@
 package BackEnd.preProject.member.controller;
 
+import BackEnd.preProject.exception.BusinessLogicException;
+import BackEnd.preProject.exception.ExceptionCode;
 import BackEnd.preProject.member.dto.MemberPatchDto;
 import BackEnd.preProject.member.dto.MemberPatchResponseDto;
 import BackEnd.preProject.member.dto.SignupDto;
@@ -36,15 +38,15 @@ public class MemberController {
     private final MemberMapper memberMapper;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> signup(@Valid @RequestBody SignupDto signupDto){
+    public ResponseEntity<SignupResponseDto> signup(@Valid @RequestBody SignupDto signupDto) {
         signupDto.checkPasswordMatch();
         Member member = memberMapper.signupDtoToMember(signupDto);
         Member saveMember = memberService.signup(member);
-        //Todo header에 location 추가
-        URI location = UriCreator.createUri("/signup", saveMember.getMemberId());
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Location", String.valueOf(location));
-        return new ResponseEntity<SignupResponseDto>(memberMapper.memberToSignupResponseDto(saveMember),headers, HttpStatus.CREATED);
+//        //Todo header에 location 추가
+//        URI location = UriCreator.createUri("/signup", saveMember.getMemberId());
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Location", String.valueOf(location));
+        return new ResponseEntity<SignupResponseDto>(memberMapper.memberToSignupResponseDto(saveMember), HttpStatus.CREATED);
     }
 
     @PatchMapping("/members/{member-id}")
