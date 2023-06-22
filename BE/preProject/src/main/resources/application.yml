@@ -19,6 +19,6 @@ mail:
 
 jwt:
   key: 121312313212313212312312312341534564564154153131321321351534654646463135131534354435131023135463      # 민감한 정보는 시스템 환경 변수에서 로드한다.
-  access-token-expiration-minutes: 30
+  access-token-expiration-minutes: 300
   refresh-token-expiration-minutes: 420
 

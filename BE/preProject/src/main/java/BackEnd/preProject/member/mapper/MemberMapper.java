@@ -1,9 +1,6 @@
 package BackEnd.preProject.member.mapper;
 
-import BackEnd.preProject.member.dto.MemberPatchDto;
-import BackEnd.preProject.member.dto.MemberPatchResponseDto;
-import BackEnd.preProject.member.dto.SignupDto;
-import BackEnd.preProject.member.dto.SignupResponseDto;
+import BackEnd.preProject.member.dto.*;
 import BackEnd.preProject.member.entity.Member;
 import org.springframework.stereotype.Component;
 
@@ -53,6 +50,14 @@ public class MemberMapper {
             list.add(this.memberToSignupResponseDto(member));
         }
         return list;
+    }
+
+    public Member memberSignupToMember(MemberDto.Signup requestBody){
+        return new Member(requestBody.getUsername(),
+                requestBody.getEmail(),
+                requestBody.getNickname(),
+                requestBody.getPassword(),
+                requestBody.getCheckPassword());
     }
 
 }

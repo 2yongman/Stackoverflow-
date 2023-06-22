@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'BackEnd'
@@ -13,16 +12,10 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-
-	asciidoctorExtensions
 }
 
 repositories {
 	mavenCentral()
-}
-
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
@@ -31,7 +24,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
-	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	runtimeOnly 'com.h2database:h2'
 	// Validate
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -60,27 +52,27 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.named('asciidoctor') {
-	configurations "asciidoctorExtensions"
-	inputs.dir snippetsDir
-	dependsOn test
-}
+//tasks.named('asciidoctor') {
+//	configurations "asciidoctorExtensions"
+//	inputs.dir snippetsDir
+//	dependsOn test
+//}
 
-
-task copyDocument(type: Copy) {
-	dependsOn asciidoctor
-	from file("${asciidoctor.outputDir}")
-	into file("src/main/resources/static/docs")
-}
-
-build {
-	dependsOn copyDocument
-}
-
-// (10)
-bootJar {
-	dependsOn copyDocument
-	from ("${asciidoctor.outputDir}") {
-		into 'static/docs'
-	}
-}
+//
+//task copyDocument(type: Copy) {
+//	dependsOn asciidoctor
+//	from file("${asciidoctor.outputDir}")
+//	into file("src/main/resources/static/docs")
+//}
+//
+//build {
+//	dependsOn copyDocument
+//}
+//
+//// (10)
+//bootJar {
+//	dependsOn copyDocument
+//	from ("${asciidoctor.outputDir}") {
+//		into 'static/docs'
+//	}
+//}

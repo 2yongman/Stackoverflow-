@@ -43,6 +43,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String password;
 
+    private String checkPassword;
+
     private LocalDateTime deletedAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -59,6 +61,14 @@ public class Member extends BaseEntity {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+    }
+
+    public Member(String username, String email, String nickname, String password, String checkPassword){
+        this.username = username;
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.checkPassword = checkPassword;
     }
 
 }
