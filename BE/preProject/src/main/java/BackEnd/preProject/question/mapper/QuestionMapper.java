@@ -33,7 +33,8 @@ public class QuestionMapper {
                 question.getTitle(),
                 question.getContent(),
                 question.getCreatedAt(),
-                question.getModifiedAt());
+                question.getModifiedAt(),
+                question.getMember().getNickname());
     }
 
     public List<QuestionResponseDto> questionsToQuestionResponseDtos(List<Question> questions){
