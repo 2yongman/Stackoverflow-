@@ -3,8 +3,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://preproject.cdu4weopnblj.ap-northeast-2.rds.amazonaws.com:13306/preproject?serverTimezone=UTC&characterEncoding=UTF-8
     username: admin
-    password: testtesttest
+    password: ${PASSWORD
   jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
     hibernate:
       ddl-auto: create  # (1) 스키마 자동 생성
     show-sql: true      # (2) SQL 쿼리 출력
