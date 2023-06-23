@@ -21,7 +21,7 @@ public class Question extends BaseEntity {
     private long questionId;
 
     @ManyToOne
-    @JoinColumn(name = "MEBER_ID")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @Column(nullable = false)
