@@ -118,4 +118,12 @@ public class QuestionService {
         return this.questionRepository.existsByQuestionIdLessThan(questionId);
 
     }
+
+    public List<Question> findQuestionsByUsername(String username){
+        Member findMember = memberService.findMemberByUsername(username); // username이 있는지 확인
+        long memberId = findMember.getMemberId();
+
+        List<Question> questions = questionRepository.findByMemberMemberId(memberId);
+        return questions;
+    }
 }

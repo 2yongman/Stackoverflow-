@@ -105,4 +105,11 @@ public class QuestionController {
         List<Question> questions = service.search(keyword);
         return new ResponseEntity(mapper.questionsToQuestionResponseDtos(questions),HttpStatus.OK);
     }
+
+    //특정 유저의 질문 목록// 누구나 볼 수 있게 함 // 자신만 볼 수 있게 하려면 코드 변경 필요
+    @GetMapping("/search/{username}")
+    public ResponseEntity getMyQuestions(@PathVariable("username") String username){
+        List<Question> questions = service.findQuestionsByUsername(username);
+        return new ResponseEntity(mapper.questionsToQuestionResponseDtos(questions),HttpStatus.OK);
+    }
 }
