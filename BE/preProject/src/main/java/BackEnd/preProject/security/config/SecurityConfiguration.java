@@ -6,6 +6,8 @@ import BackEnd.preProject.security.filter.JwtVerificationFilter;
 import BackEnd.preProject.security.handler.MemberAuthenticationFailureHandler;
 import BackEnd.preProject.security.handler.MemberAuthenticationSuccessHandler;
 import BackEnd.preProject.security.jwt.JwtTokenizer;
+import BackEnd.preProject.security.refreshtoken.RedisService;
+import BackEnd.preProject.security.refreshtoken.RefreshTokenRepository;
 import BackEnd.preProject.security.utils.CustomAuthorityUtils;
 import io.jsonwebtoken.Jwt;
 import org.springframework.context.annotation.Bean;
@@ -32,14 +34,16 @@ public class SecurityConfiguration {
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
-
     private final LoginHistoryRepository loginHistoryRepository;
+    private final RedisService redisService;
 
     public SecurityConfiguration(JwtTokenizer jwtTokenizer,
-                                 CustomAuthorityUtils authorityUtils, LoginHistoryRepository loginHistoryRepository) {
+                                 CustomAuthorityUtils authorityUtils, LoginHistoryRepository loginHistoryRepository,
+                                 RedisService redisService) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
         this.loginHistoryRepository = loginHistoryRepository;
+        this.redisService = redisService;
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -94,7 +98,7 @@ public class SecurityConfiguration {
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, loginHistoryRepository);  // (2-4)
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, loginHistoryRepository, redisService);
             jwtAuthenticationFilter.setFilterProcessesUrl("/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());

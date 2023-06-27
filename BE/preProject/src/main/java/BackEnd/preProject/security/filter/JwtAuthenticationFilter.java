@@ -5,6 +5,7 @@ import BackEnd.preProject.accessHistory.LoginHistoryRepository;
 import BackEnd.preProject.member.entity.Member;
 import BackEnd.preProject.security.dto.LoginDto;
 import BackEnd.preProject.security.jwt.JwtTokenizer;
+import BackEnd.preProject.security.refreshtoken.RedisService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,12 +26,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
     private final LoginHistoryRepository loginHistoryRepository;
+    private final RedisService redisService;
+
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer,
-                                   LoginHistoryRepository loginHistoryRepository) {
+                                   LoginHistoryRepository loginHistoryRepository, RedisService redisService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
         this.loginHistoryRepository = loginHistoryRepository;
+        this.redisService = redisService;
     }
 
     @SneakyThrows
@@ -53,9 +58,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = delegateRefreshToken(member);
 
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Refresh", refreshToken);
-
-
+        Cookie refreshTokenCookie = new Cookie("MyRefreshToken",refreshToken);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 유효기간 30일
+        response.addCookie(refreshTokenCookie);
 
         //로그인한 유저의 아이디를 JSON 형식으로 응답
         String username = member.getUsername();
@@ -77,6 +84,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.getWriter().write(String.valueOf(result).replace("{","{\n").replace(",",",\n")
                 .replace("=",":").replace(":"," :"));
+
+        //todo Redis에 refreshtoken 저장
+        redisService.saveKeyValueToRedis(member.getUsername(),refreshToken);
+
     }
 
 

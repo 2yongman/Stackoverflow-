@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Getter
 public class QuestionPatchDto extends BaseEntity {
@@ -20,8 +21,11 @@ public class QuestionPatchDto extends BaseEntity {
 
     @NotBlank
     private String title;
+
     @NotBlank
     @Size(min = 10)
     private String content;
+
+    private Set<String> tag;
 
 }

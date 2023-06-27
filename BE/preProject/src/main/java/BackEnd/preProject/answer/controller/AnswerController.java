@@ -30,7 +30,7 @@ public class AnswerController {
     private final AnswerMapper mapper;
     private final AnswerService service;
 
-    public AnswerController(AnswerMapper answerMapper, AnswerService answerService){
+    public AnswerController(AnswerMapper answerMapper, AnswerService answerService) {
         this.mapper = answerMapper;
         this.service = answerService;
     }
@@ -41,7 +41,7 @@ public class AnswerController {
     @PostMapping("/{question-id}")
     public ResponseEntity postAnswer(@Valid @RequestBody AnswerPostDto answerPostDto,
                                      @PathVariable("question-id") @Positive long questionId,
-                                     Authentication authentication){
+                                     Authentication authentication) {
         String username = authentication.getName();
 
         Answer answer = mapper.answerPostDtoToAnswer(answerPostDto);
@@ -54,19 +54,19 @@ public class AnswerController {
     @PatchMapping("/{answer-id}")
     public ResponseEntity patchAnswer(@PathVariable("answer-id") @Positive long answerId,
                                       @Valid @RequestBody AnswerPatchDto answerPatchDto,
-                                      Authentication authentication){
+                                      Authentication authentication) {
         String username = authentication.getName();
 
         Answer answer = mapper.answerPatchDtoToAnswer(answerPatchDto);
         answer.setAnswerId(answerId);
-        Answer serviceResult = service.updateAnswer(answer,username);
+        Answer serviceResult = service.updateAnswer(answer, username);
         AnswerResponseDto answerResponseDto = mapper.answerToAnswerResponseDto(serviceResult);
-        return new ResponseEntity<>(answerResponseDto, HttpStatus.OK) ;
+        return new ResponseEntity<>(answerResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{answer-id}")
     public ResponseEntity deleteAnswer(@PathVariable("answer-id") @Positive long answerId,
-                                       Authentication authentication){
+                                       Authentication authentication) {
         String username = authentication.getName();
         service.deleteAnswerById(answerId, username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -75,9 +75,19 @@ public class AnswerController {
     @GetMapping("/infinity/{question-id}")
     public ResponseEntity answerInfinityScroll(@Positive @PathVariable("question-id") Long questionId,
                                                @RequestParam(required = false) Long cursorId,
-                                               @RequestParam(required = false) Integer size){
+                                               @RequestParam(required = false) Integer size) {
         if (size == null) size = DEFAULT_SIZE;
-        CursorResult<AnswerResponseDto> cursorResult = service.infinityScroll(questionId,cursorId, PageRequest.of(0,size));
-        return new ResponseEntity(cursorResult,HttpStatus.OK);
+        CursorResult<AnswerResponseDto> cursorResult = service.infinityScroll(questionId, cursorId, PageRequest.of(0, size));
+        return new ResponseEntity(cursorResult, HttpStatus.OK);
     }
+
+    @PostMapping("/{question-id}/answer/{answer-id}/select")
+    public ResponseEntity selectAnswer(@Positive @PathVariable("question-id") Long questionId,
+                                       @Positive @PathVariable("answer-id") Long answerId,
+                                       Authentication authentication){
+        String username = authentication.getName();
+        service.selectAnswer(questionId,answerId,username);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }

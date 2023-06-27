@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Set;
 
 @RequestMapping("/questions")
 @RestController
@@ -37,11 +38,10 @@ public class QuestionController {
     @PostMapping
     public ResponseEntity postQuestion(Authentication authentication,
                                        @Valid @RequestBody QuestionPostDto questionPostDto) {
-
         String username = authentication.getName();
-
+        Set<String> tags = questionPostDto.getTag();
         Question question = mapper.questionPostDtoToQuestion(questionPostDto);
-        Question serviceResult = service.createQuestion(question, username);
+        Question serviceResult = service.createQuestion(question, username, tags);
         QuestionResponseDto questionResponseDto = mapper.questionToQuestionResponseDto(serviceResult);
 
         return new ResponseEntity<>(questionResponseDto, HttpStatus.CREATED);
@@ -52,11 +52,10 @@ public class QuestionController {
                                         @PathVariable("question-id") @Positive long questionId,
                                         Authentication authentication) {
         String username = authentication.getName();
-
-
+        Set<String> tags = questionPatchDto.getTag();
         Question question = mapper.questionPatchDtoToQuestion(questionPatchDto);
         question.setQuestionId(questionId);
-        Question serviceResult = service.updateQuestion(question, username);
+        Question serviceResult = service.updateQuestion(question, username,tags);
         QuestionResponseDto questionResponseDto = mapper.questionToQuestionResponseDto(serviceResult);
 
         return new ResponseEntity<>(questionResponseDto, HttpStatus.OK);

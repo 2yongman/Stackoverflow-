@@ -30,6 +30,9 @@ public class Answer extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private Boolean selectd = false;
+
     public Answer(String content){
         this.content=content;
     }

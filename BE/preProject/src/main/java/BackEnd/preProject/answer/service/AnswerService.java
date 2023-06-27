@@ -98,6 +98,22 @@ public class AnswerService {
                 answerRepository.findByQuestionAndAnswerIdLessThanOrderByAnswerIdDesc(question,cursorId,page);
     }
 
+    public void selectAnswer(Long questionId, Long answerId, String username){
+        Question question = questionService.findQuestionById(questionId);
+        memberService.checkQuestionUsernameEqualsUsername(question.getMember().getUsername(),username);
+
+        //채택이 안된 글만 채택 진행
+        if (!question.getQuestionStatus().equals(Question.QuestionStatus.QUESTION_COMPLETE)){
+            Answer findAnswer = this.findAnswerById(answerId);
+            findAnswer.setSelectd(true);
+            question.setQuestionStatus(Question.QuestionStatus.QUESTION_COMPLETE);
+            answerRepository.save(findAnswer);
+        } else {
+            throw new IllegalArgumentException("채택을 할 수 업습니다.");
+        }
+
+    }
+
     private Boolean hasNext(Long cursorId){
         if (cursorId == null) return false;
         return this.answerRepository.existsByAnswerIdLessThan(cursorId);

@@ -116,4 +116,12 @@ public class MemberService {
         );
         return findMember;
     }
+
+    public void checkQuestionUsernameEqualsUsername(String questionUsername, String username){
+        Member questionMember = this.findMemberByUsername(questionUsername);
+        Member user = this.findMemberByUsername(username);
+        if (questionMember.getUsername().equals(user.getUsername())){
+            throw new IllegalArgumentException("질문을 작성한 사용자만이 채택할 수 있습니다.");
+        }
+    }
 }

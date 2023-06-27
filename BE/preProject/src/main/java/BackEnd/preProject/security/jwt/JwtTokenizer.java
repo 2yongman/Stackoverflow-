@@ -100,5 +100,9 @@ public class JwtTokenizer {
         return key;
     }
 
+    //jwt 토큰의 유효성 + 만료일자만 초과한 토큰이면 true 반환
+    public Jws<Claims> refreshTokenIssue(){
+        String redisValue =
+    }
 
 }
