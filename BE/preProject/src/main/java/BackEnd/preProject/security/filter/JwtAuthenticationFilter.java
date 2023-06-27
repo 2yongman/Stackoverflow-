@@ -90,14 +90,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     }
 
-
-
     private String delegateAccessToken(Member member) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", member.getUsername());
-//        claims.put("memberId", member.getMemberId());
         claims.put("roles", member.getRoles());
-
 
         String subject = member.getEmail(); /// Todo 토큰에 email 정보를 넣을까 말까? 다른걸 넣을까 고민중
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
@@ -110,7 +106,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     private String delegateRefreshToken(Member member) {
-        String subject = member.getEmail();
+        String subject = member.getUsername();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
@@ -118,7 +114,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return refreshToken;
 
     }
-
-
-
 }

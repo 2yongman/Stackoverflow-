@@ -93,6 +93,7 @@ public class JwtTokenizer {
         Date expiration = calendar.getTime();
         return expiration;
     }
+
     //Todo Base64로 인코딩된 비밀키를 디코딩하여 Key 객체로 변환하는 메서드
     private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
@@ -100,9 +101,19 @@ public class JwtTokenizer {
         return key;
     }
 
-    //jwt 토큰의 유효성 + 만료일자만 초과한 토큰이면 true 반환
-    public Jws<Claims> refreshTokenIssue(){
-        String redisValue =
-    }
+    //Todo refresh Token 복호화
+    public Claims decodeRefreshToken(String refreshToken, String base64EncodedSecretKey) {
+        try {
+            byte[] keyBytes = base64EncodedSecretKey.getBytes();
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(keyBytes))
+                    .build()
+                    .parseClaimsJws(refreshToken);
 
+            return claimsJws.getBody();
+        } catch (Exception e) {
+            // Refresh Token 복호화 중 예외 처리
+            return null;
+        }
+    }
 }

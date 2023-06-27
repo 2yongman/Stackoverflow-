@@ -10,11 +10,9 @@ import java.time.Duration;
 public class RedisService {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final RefreshTokenRepository refreshTokenRepository;
 
-    public RedisService(RedisTemplate<String, String> redisTemplate, RefreshTokenRepository refreshTokenRepository) {
+    public RedisService(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public void saveKeyValueToRedis(String key, String value){
@@ -30,8 +28,17 @@ public class RedisService {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         return values.get(key);
     }
+
     public void deleteValues(String key){
         redisTemplate.delete(key);
     }
 
+    public boolean verifyRefreshToken(String username,String refreshToken){
+        String storedRefreshToken = this.getValues(username);
+        if (storedRefreshToken != null && storedRefreshToken.equals(refreshToken)){
+            return true;
+        }else {
+            throw new RuntimeException("Refresh Token is invalid");
+        }
+    }
 }
